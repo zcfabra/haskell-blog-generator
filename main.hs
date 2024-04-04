@@ -1,7 +1,4 @@
 module Main where
-import Text.PrettyPrint (TextDetails(Str))
-import Control.Monad.RWS.Lazy (MonadState(get))
-import Data.Array.Base (STUArray(STUArray))
 
 {-
     Partial application:
