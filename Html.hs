@@ -7,6 +7,11 @@ module Html
     h1_,
     append_,
     render,
+    ul_,
+    ol_,
+    getInnerHtmlText, 
+    getInnerString,
+    -- buildList,
   )
 where
 

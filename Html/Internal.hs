@@ -30,7 +30,10 @@ head_ = Structure . el "head"
 
 p_ = Structure . el "p" . escape
 
+code_ = Structure . el "pre" . escape
+
 h1_ = Structure . el "h1" . escape
+
 
 {-
     Partial application:
@@ -66,3 +69,33 @@ escape =
 
 -- What this does is apply the escape char fn to each char in a list
 -- then concat it all together: chars --> map --> concat
+
+
+li_ :: String -> Structure 
+li_ = Structure . el "li"
+
+
+-- listify :: [Structure] -> Structure 
+-- listify els = 
+--     customFold (map (li_ .  getInnerString) els )
+
+-- ul_ :: [Structure] -> Structure 
+-- ul_ els = 
+--     let inner = listify els
+--     in Structure $ el "ul" (getInnerString inner)
+
+-- ol_ :: [Structure] -> Structure
+-- ol_ els =  
+--     let inner = listify els
+--     in Structure $ el "ol" (getInnerString inner)
+
+ul_ :: [Structure] -> Structure
+ul_ = Structure . el "ul" . concatMap (el "li" . getInnerString)
+
+ol_ :: [Structure] -> Structure
+ol_ = Structure . el "ol" . concatMap (el "li" . getInnerString)
+
+customFold els =
+    case els of 
+        [] -> Structure[]
+        h:t -> append_ h (customFold  t)
