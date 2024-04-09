@@ -95,7 +95,19 @@ ul_ = Structure . el "ul" . concatMap (el "li" . getInnerString)
 ol_ :: [Structure] -> Structure
 ol_ = Structure . el "ol" . concatMap (el "li" . getInnerString)
 
-customFold els =
-    case els of 
-        [] -> Structure[]
-        h:t -> append_ h (customFold  t)
+
+{--
+data vs newtypes
+
+data <Type-name> <type-args>
+= <Data-constructor> <types>
+| <Data-constructor> <types>
+| <Data-constructor> <types>
+| ...
+
+newtypes is a typesafe alisa
+data is a composite type
+subtle differences from newtypes:
+1. data type constructors can deal in multiple args, newtypes can only take one
+2. can have alternative types with |, but newtypes cannot have alternatives
+--}
