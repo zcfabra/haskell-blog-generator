@@ -11,6 +11,9 @@ Types:
 newtype Html = Html String
 
 newtype Structure = Structure String
+instance Semigroup Structure where
+    (<>) :: Structure -> Structure -> Structure
+    (<>) a b = Structure (getInnerString a <> getInnerString b)
 
 newtype Title = Title String
 
@@ -54,7 +57,6 @@ getInnerHtmlText html =
 
 render = getInnerHtmlText
 
-append_ (Structure a) (Structure b) = Structure (a <> b)
 
 escape :: String -> String
 escape =
