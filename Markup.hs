@@ -4,6 +4,7 @@ module Markup(
 ) where
 import Numeric.Natural
 import Html (getInnerString)
+import Data.Maybe (maybeToList)
 
 type Document = [Structure]
 data Structure =
@@ -15,20 +16,26 @@ data Structure =
     deriving Show
 
 parse :: String -> Document 
-parse = parseLines [] . lines
+parse = parseLines Nothing . lines
 
-parseLines :: [String] -> [String] -> Document
-parseLines currentParagraph txts = 
+parseLines :: Maybe Structure -> [String] -> Document
+parseLines context txts = 
     -- Pass new lines in reverse order because of the prepend vs append stuff 
-    let para = Paragraph(unlines (reverse currentParagraph))
-    in case txts of 
-        [] -> [para]
+    case txts of 
+        [] -> maybeToList context
         currentLine : rest -> 
-            if trim currentLine == ""
-                then
-                    para : parseLines [] rest
-                else
-                    parseLines (currentLine : currentParagraph) rest
-
+            let line = trim currentLine in
+                if line == ""
+                    {-- maybe fn:
+                        arg1 is a value to return if Nothing,
+                        arg2 is a function to apply to Just case,
+                        arg3 is the value on which we pattern match --}
+                    then maybe id (:) context (parseLines Nothing rest)
+                    else
+                        case context of 
+                            Just (Paragraph paragraph) ->
+                                parseLines (Just (Paragraph (unwords [paragraph, line]))) rest
+                            Nothing ->
+                                maybe id (:) context (parseLines (Just (Paragraph line)) rest)
 
 trim = unwords . words
