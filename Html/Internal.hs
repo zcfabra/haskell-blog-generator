@@ -16,9 +16,12 @@ instance Semigroup Structure where
     (<>) :: Structure -> Structure -> Structure
     (<>) a b = Structure (getInnerString a <> getInnerString b)
 
-newtype Title = Title String
+instance Monoid Structure where
+    mempty = empty_
 
-html_ :: String -> Structure -> Html
+type Title = String
+
+html_ :: Title -> Structure -> Html
 html_ title content =
   Html
     ( el
@@ -119,3 +122,6 @@ subtle differences from newtypes:
 1. data type constructors can deal in multiple args, newtypes can only take one
 2. can have alternative types with |, but newtypes cannot have alternatives
 --}
+
+empty_ :: Structure
+empty_ = Structure ""
