@@ -1,4 +1,5 @@
 module Html.Internal where
+import GHC.Natural (Natural)
 
 
 {-
@@ -34,6 +35,11 @@ head_ = Structure . el "head"
 p_ = Structure . el "p" . escape
 
 code_ = Structure . el "pre" . escape
+
+h_ :: Natural -> String -> Structure
+h_ level = 
+    let tagText = "h" <> show level
+    in Structure . el tagText . escape
 
 h1_ = Structure . el "h1" . escape
 
