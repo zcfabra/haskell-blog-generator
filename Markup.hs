@@ -1,6 +1,7 @@
 module Markup(
     Structure(..), 
-    Document
+    Document,
+    parse_
 ) where
 import Numeric.Natural
 import Html (getInnerString)
@@ -15,8 +16,8 @@ data Structure =
     | CodeBlock [String]
     deriving Show
 
-parse :: String -> Document 
-parse = parseLines Nothing . lines
+parse_ :: String -> Document 
+parse_ = parseLines Nothing . lines
 
 parseLines :: Maybe Structure -> [String] -> Document
 parseLines context txts = 

@@ -1,6 +1,10 @@
+{-# LANGUAGE LambdaCase #-}
 import Html
-import System.Console.Terminfo (Color (Magenta, Yellow))
 import Data.Maybe (listToMaybe)
+import System.Directory.Internal.Prelude (getArgs)
+import Generator (process)
+import System.Directory (doesFileExist)
+
 
 replicate_ :: Int -> a -> [a]
 replicate_ numEls toReplicate =
@@ -53,6 +57,22 @@ isEmpty l =
 
 main :: IO ()
 main = do
-  putStrLn $ render $ html_ "title" (h1_ "My Header''''" <> p_ "paragraphic")
-  putStrLn $ getInnerString $ ul_ [p_ "hi", p_ "bye"]
-  putStrLn $ getInnerString $ ol_ [p_ "hi", p_ "bye"]
+    -- Want to handle many cases including
+    -- 1. Empty args
+    -- 2. Input and output file
+    getArgs >>= 
+        \case
+            [] -> 
+                getContents >>= \contents -> 
+                    putStrLn (process "Untitled" contents)
+            [input, output] -> 
+                doesFileExist input >>= \exists ->
+                    if exists
+                        then
+                            readFile input >>= \contents -> 
+                                writeFile output (process input contents)
+                        else 
+                            putStrLn $ "Could not find input file " <> input
+            _ -> print "Idk man I don't think you're using this thing right"
+            
+    
